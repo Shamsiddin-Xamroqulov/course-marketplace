@@ -16,6 +16,11 @@ const serverConfig = {
         EMAIL: process.env.EMAIL,
         NODE_MAILER_KEY: process.env.NODE_MAILER_KEY,
     },
+    token_service: {
+        ACCESS_TOKEN_KEY: process.env.ACCESS_TOKEN_KEY,
+        REFRESH_TOKEN_KEY: process.env.REFRESH_TOKEN_KEY
+    },
+    NODE_ENV: process.env.NODE_ENV
 };
 
 export default serverConfig;
