@@ -1,0 +1,33 @@
+{
+  "name": "course-marketplace",
+  "version": "1.0.0",
+  "type": "module",
+  "main": "src/server.js",
+  "author": "Xamroqulov Shamsiddin <xamroqulovsh7@gmail.com>",
+  "license": "MIT",
+  "description": "An online marketplace for buying, selling, and watching educational courses. Includes user accounts, secure payments, and a full video-learning experience.",
+  "scripts": {
+    "dev": "node --watch src/server.js",
+    "start": "node src/server.js",
+    "build": "npm i"
+  },
+  "keywords": [
+    "nodejs",
+    "sequelize",
+    "course-marketplace",
+    "backend"
+  ],
+  "dependencies": {
+    "bcrypt": "^6.0.0",
+    "cookie-parser": "^1.4.7",
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.3",
+    "express": "^5.2.1",
+    "joi": "^18.0.2",
+    "jsonwebtoken": "^9.0.3",
+    "nodemailer": "^7.0.11",
+    "pg": "^8.16.3",
+    "sequelize": "^6.37.7",
+    "shokhijakhon-error-handler": "^1.1.0"
+  }
+}
