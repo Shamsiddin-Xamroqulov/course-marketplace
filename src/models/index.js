@@ -19,6 +19,14 @@ const CourseModel = Course(sequelize);
 const LessonModel = Lesson(sequelize);
 const CategoryModel = Category(sequelize);
 
+// user.id=admin.user_id;
+UserModel.hasOne(AdminModel, {foreignKey: "user_id", onDelete: "CASCADE"});
+AdminModel.belongsTo(UserModel, {foreignKey: "user_id"});
+
+// user.id=instructor.user_id;
+UserModel.hasOne(InstructorModel, {foreignKey: "user_id", onDelete: "CASCADE"});
+InstructorModel.belongsTo(UserModel, {foreignKey: "user_id"});
+
 export {
   UserModel,
   AdminModel,

@@ -11,6 +11,17 @@
     "start": "node src/server.js",
     "build": "npm i"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Shamsiddin-Xamroqulov/course-marketplace.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Shamsiddin-Xamroqulov/course-marketplace/issues"
+  },
+  "homepage": "https://github.com/Shamsiddin-Xamroqulov/course-marketplace",
+  "engines": {
+    "node": ">=18"
+  },
   "keywords": [
     "nodejs",
     "sequelize",

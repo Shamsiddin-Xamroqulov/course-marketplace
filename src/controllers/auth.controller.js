@@ -1,10 +1,21 @@
 import { ClientError, globalError } from "shokhijakhon-error-handler";
-import { createUserSchema } from "../utils/validators/user.validator.js";
+import {
+  createUserSchema,
+  loginSchema,
+} from "../utils/validators/user.validator.js";
 import { InstructorModel, UserModel } from "../models/index.js";
 import otpGenerator from "../utils/generators/otp.generator.js";
 import mailService from "../lib/services/mail.service.js";
 import hashService from "../lib/services/hashing.service.js";
-import { resendSchema, verifySchema } from "../utils/validators/otp.validator.js";
+import {
+  changePasswordSchema,
+  resendSchema,
+  verifySchema,
+} from "../utils/validators/otp.validator.js";
+import jwtService from "../lib/services/jwt.service.js";
+import tokenDataGenerator from "../utils/generators/token.data.generator.js";
+
+const { roles } = jwtService;
 
 class AuthController {
   constructor() {
@@ -18,7 +29,7 @@ class AuthController {
         const checkUser = await UserModel.findOne({
           where: { email: value.email },
         });
-        if (checkUser) throw new ClientError("User alredy exists !", 400);
+        if (checkUser) throw new ClientError("User alredy exists", 400);
         const { otp, otpTime } = otpGenerator();
         await mailService(otp, value.email);
         const hashPassword = await hashService.hashingPassword(value.password);
@@ -54,47 +65,160 @@ class AuthController {
     this.verify = async (req, res) => {
       try {
         const verifyData = req.body;
-        const {error, value} = verifySchema.validate(verifyData, {abortEarly: false});
-        if(error) throw new ClientError(error.message, 400);
-        const checkUser = await UserModel.findOne({where: {email: value.email}});
-        if(!checkUser) throw new ClientError("User not found !", 404);
-        if(checkUser.is_verified) throw new ClientError("User already verified !", 409);
-        if(value.otp !== checkUser.otp) throw new ClientError("OTP invalid !", 400);
+        const { error, value } = verifySchema.validate(verifyData, {
+          abortEarly: false,
+        });
+        if (error) throw new ClientError(error.message, 400);
+        const findUser = await UserModel.findOne({
+          where: { email: value.email },
+        });
+        if (!findUser) throw new ClientError("User not found", 404);
+        if (findUser.is_verified)
+          throw new ClientError("User already verified", 409);
+        if (value.otp !== findUser.otp)
+          throw new ClientError("OTP invalid", 400);
         const now = Date.now();
-        if(now > checkUser.otp_time) {
-          await UserModel.update({otp: null, otp_time: null}, {where: {email: value.email}});
+        if (now > findUser.otp_time) {
+          await UserModel.update(
+            { otp: null, otp_time: null },
+            { where: { email: value.email } }
+          );
           throw new ClientError("OTP invalid !", 400);
-        };
-        await UserModel.update({is_verified: true}, {where: {email: value.email}});
-        return res.json({message: "User successfully verified !", status: 200});
+        }
+        await UserModel.update(
+          { is_verified: true },
+          { where: { email: value.email } }
+        );
+        return res.json({
+          message: "User successfully verified !",
+          status: 200,
+        });
       } catch (err) {
         return globalError(err, res);
-      };
+      }
     };
     this.resendOtp = async (req, res) => {
       try {
-          const otpData = req.body;
-          const {error, value} = resendSchema.validate(otpData, {abortEarly: false});
-          if(error) throw new ClientError(error.message, 400);
-          const checkUser = await UserModel.findOne({where: {email: value.email}});
-          if(!checkUser) throw new ClientError("User not found !", 404);
-          if(checkUser.is_verified) throw new ClientError("User alredy verified !", 409);
-          const {otp, otpTime} = otpGenerator();
-          await mailService(otp, value.email);
-          await UserModel.update({otp, otp_time: otpTime}, {where: {email: value.email}});
-          return res.json({message: "OTP has been sent, check your email", status: 200});
-      }catch(err) {
+        const otpData = req.body;
+        const { error, value } = resendSchema.validate(otpData, {
+          abortEarly: false,
+        });
+        if (error) throw new ClientError(error.message, 400);
+        const findUser = await UserModel.findOne({
+          where: { email: value.email },
+        });
+        if (!findUser) throw new ClientError("User not found", 404);
+        if (findUser.is_verified)
+          throw new ClientError("User alredy verified", 409);
+        const { otp, otpTime } = otpGenerator();
+        await mailService(otp, value.email);
+        await UserModel.update(
+          { otp, otp_time: otpTime },
+          { where: { email: value.email } }
+        );
+        return res.json({
+          message: "OTP has been sent, check your email !",
+          status: 200,
+        });
+      } catch (err) {
         return globalError(err, res);
-      };
+      }
     };
-    // this.forgotPassword = async (req, res) => {
-    //   try{
-
-    //   }catch(err) {
-    //     return globalError(err, res);
-    //   };
-    // };
-  };
-};
+    this.forgotPassword = async (req, res) => {
+      try {
+        const forgotData = req.body;
+        const { error, value } = resendSchema.validate(forgotData, {
+          abortEarly: false,
+        });
+        if (error) throw new ClientError(error.message, 400);
+        const findUser = await UserModel.findOne({
+          where: { email: value.email },
+        });
+        if (!findUser) throw new ClientError("User not founded", 404);
+        await UserModel.update(
+          { is_verified: false },
+          { where: { email: value.email } }
+        );
+        const { otp, otpTime } = otpGenerator();
+        await mailService(otp, value.email);
+        await UserModel.update(
+          { otp, otp_time: otpTime },
+          { where: { email: value.email } }
+        );
+        return res.json({
+          message: "OTP has been sent, check your email",
+          status: 200,
+        });
+      } catch (err) {
+        return globalError(err, res);
+      }
+    };
+    this.change_password = async (req, res) => {
+      try {
+        const passwordData = req.body;
+        const { error, value } = changePasswordSchema.validate(passwordData, {
+          abortEarly: false,
+        });
+        if (error) throw new ClientError(error.message, 400);
+        const findUser = await UserModel.findOne({
+          where: { email: value.email },
+        });
+        if (!findUser) throw new ClientError("User not found", 404);
+        if (findUser.is_verified)
+          throw new ClientError("User already verified", 409);
+        value.new_password = await hashService.hashingPassword(value.password);
+        await UserModel.update(
+          { password: value.new_password },
+          { where: { email: value.email } }
+        );
+        return res.json({
+          message: "Password successfully updated !",
+          status: 200,
+        });
+      } catch (err) {
+        return globalError(err, res);
+      }
+    };
+    this.login = async (req, res) => {
+      try {
+        const loginData = req.body;
+        const { error, value } = loginSchema.validate(loginData, {
+          abortEarly: false,
+        });
+        if (error) throw new ClientError(error.message, 400);
+        const findUser = await UserModel.findOne({
+          where: { email: value.email },
+        });
+        if (!findUser) throw new ClientError("User not found", 404);
+        const password = await hashService.comparePassword(
+          value.password,
+          findUser.password
+        );
+        if (!password) throw new ClientError("Password invalid", 400);
+        let tokenData = {
+          user_id: findUser.id,
+          role: findUser.role,
+          userAgent: req.headers["user-agent"],
+          ...roles,
+        };
+        tokenData = await tokenDataGenerator(findUser, tokenData);
+        const accessToken = jwtService.createAccessToken(tokenData);
+        const refreshToken = jwtService.createRefreshToken(tokenData);
+        res.cookie(
+          "refreshToken",
+          refreshToken,
+          jwtService.refreshTokenOptions
+        );
+        return res.json({
+          message: "User successfully logged in !",
+          accessToken,
+          status: 200,
+        });
+      } catch (err) {
+        return globalError(err, res);
+      }
+    };
+  }
+}
 
 export default new AuthController();
