@@ -23,11 +23,18 @@ class AdminController {
         const insertAdmin = await UserModel.create({
           ...value,
           is_verified: true,
+          role: "admin"
         });
+        const {password, otp, otp_time, avatar, photo_id, ...safeAdmin} = insertAdmin.toJSON();
         await AdminModel.create({ user_id: insertAdmin.id });
         return res
           .status(201)
-          .json({ message: "Admin successfully created !", status: 201 });
+          .json({
+            success: true,
+            message: "Admin successfully created !",
+            status: 201,
+            data: safeAdmin,
+          });
       } catch (err) {
         return globalError(err, res);
       }
@@ -85,6 +92,9 @@ class AdminController {
           abortEarly: false,
         });
         if (error) throw new ClientError(error.message, 400);
+        if(value.password) {
+          value.password = await hashService.hashingPassword(value.password);
+        };
         await UserModel.update({ ...value });
         return res.json({
           message: "Admin successfully updated !",
@@ -96,16 +106,19 @@ class AdminController {
     };
     this.delete_admin = async (req, res) => {
       try {
-        const {id} = req.params;
-        const findAdmin = await AdminModel.findOne({where: {id}});
-        if(!findAdmin) throw new ClientError("Admin not found !", 404);
-        await AdminModel.destroy({where: {id}});
-        return res.json({message: "Admin successfully deleted !", status: 200});
+        const { id } = req.params;
+        const findAdmin = await AdminModel.findOne({ where: { id } });
+        if (!findAdmin) throw new ClientError("Admin not found !", 404);
+        await AdminModel.destroy({ where: { id } });
+        return res.json({
+          message: "Admin successfully deleted !",
+          status: 200,
+        });
       } catch (err) {
         return globalError(err, res);
       }
     };
-  };
-};
+  }
+}
 
 export default new AdminController();

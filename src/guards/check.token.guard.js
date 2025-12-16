@@ -9,6 +9,7 @@ const checkTokenGuard = async (req, res, next) => {
         const decoded = jwtService.compareAccessToken(accessToken);
         const checkUser = await UserModel.findByPk(decoded.user_id);
         if(!checkUser) throw new ClientError("Invalid Token", 401);
+        if(req.headers["user-agent"] != decoded.userAgent) throw new ClientError("Invalid Token", 401);
         req.user = decoded;
         return next();
     }catch(err) {

@@ -4,6 +4,8 @@ import serverConfig from "./config.js";
 import mainRouter from "./routes/main.routes.js";
 import cookieParser from "cookie-parser";
 import { dbConnection } from "./lib/connection/db.connection.js";
+import swaggerUiExpress from "swagger-ui-express";
+import swaggerDocs from "./docs/swagger.docs.js";
 const {server: {PORT}} = serverConfig;
 
 dbConnection().catch(err => {
@@ -18,6 +20,7 @@ app.use(cors());
 app.use(cookieParser());
 
 app.use("/api", mainRouter);
+app.use("/api-docs", swaggerUiExpress.serve, swaggerUiExpress.setup(swaggerDocs));
 
 async function start() {
     try{

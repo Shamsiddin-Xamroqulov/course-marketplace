@@ -3,7 +3,7 @@ import {
   createUserSchema,
   loginSchema,
 } from "../utils/validators/user.validator.js";
-import { InstructorModel, UserModel } from "../models/index.js";
+import { InstructorModel, RefreshTokenModel, UserModel } from "../models/index.js";
 import otpGenerator from "../utils/generators/otp.generator.js";
 import mailService from "../lib/services/mail.service.js";
 import hashService from "../lib/services/hashing.service.js";
@@ -204,6 +204,11 @@ class AuthController {
         tokenData = await tokenDataGenerator(findUser, tokenData);
         const accessToken = jwtService.createAccessToken(tokenData);
         const refreshToken = jwtService.createRefreshToken(tokenData);
+        await RefreshTokenModel.create({
+          token: refreshToken,
+          user_id: findUser.id,
+          expires_at: new Date(Date.now() + jwtService.refreshTokenOptions.maxAge)
+        });
         res.cookie(
           "refreshToken",
           refreshToken,
@@ -220,10 +225,21 @@ class AuthController {
     };
     this.refresh_token = async (req, res) => {
       try {
-        
+        const refreshToken = req.cookies.refreshToken;
+        if(!refreshToken) throw new ClientError("Token not found", 404);
+        let payload = jwtService.compareRefreshToken(refreshToken);
+        if(req.headers["user-agent"] != payload.userAgent) throw new ClientError("Invalid token", 401);
+        let user = await UserModel.findOne({where: {id: payload.user_id}});
+        if(!user) throw new ClientError("Invalid token", 401);
+        const findToken = await RefreshTokenModel.findOne({where: {token: refreshToken, user_id: user.id}});
+        if(!findToken) throw new ClientError("Invalid token", 401);
+        const tokenData = {user_id: user.id, role: user.role, userAgent: req.headers["user-agent"], ...roles};
+        tokenData = await tokenDataGenerator(user, tokenData);
+        let newAccessToken = jwtService.createAccessToken(tokenData);
+        return res.json({message: "AccessToken successfully generated !", newAccessToken, status: 200});
       }catch(err) {
         return globalError(err, res);
-      };
+      }; 
     };
   };
 };

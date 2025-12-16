@@ -3,7 +3,7 @@ import { DataTypes } from "sequelize";
 export default (sequelize) => {
   const RefreshToken = sequelize.define("RefreshToken", {
       id: {
-        type: DataTypes.INTEGER,
+        type: DataTypes.BIGINT,
         autoIncrement: true,
         primaryKey: true,
       },
