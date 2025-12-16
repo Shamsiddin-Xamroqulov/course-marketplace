@@ -15,4 +15,7 @@ authRouter.post("/change/password", authController.change_password);
 // Login
 authRouter.post("/login", authController.login);
 
+// RefreshToken
+authRouter.post("/refresh/token", authController.refresh_token);
+
 export default authRouter;

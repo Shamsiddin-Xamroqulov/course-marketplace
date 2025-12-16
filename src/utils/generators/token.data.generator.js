@@ -1,5 +1,5 @@
 import { ClientError } from "shokhijakhon-error-handler";
-import { AdminModel, InstructorModel, UserModel } from "../../models/index.js";
+import { AdminModel, InstructorModel } from "../../models/index.js";
 
 const tokenDataGenerator = async (findUser, tokenData) => {
   if (findUser.role == "student") {

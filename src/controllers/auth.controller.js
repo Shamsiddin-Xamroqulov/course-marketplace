@@ -216,9 +216,16 @@ class AuthController {
         });
       } catch (err) {
         return globalError(err, res);
-      }
+      };
     };
-  }
-}
+    this.refresh_token = async (req, res) => {
+      try {
+        
+      }catch(err) {
+        return globalError(err, res);
+      };
+    };
+  };
+};
 
 export default new AuthController();
