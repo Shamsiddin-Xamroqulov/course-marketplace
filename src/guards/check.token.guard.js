@@ -4,8 +4,9 @@ import { UserModel } from "../models/index.js";
 
 const checkTokenGuard = async (req, res, next) => {
     try{
-        const accessToken = req.headers["authorization"].split(" ")[1];
-        if(!accessToken) throw new ClientError("Unauthorized", 401);
+        let accessToken = req.headers["authorization"];
+        if(!accessToken) throw new ClientError("Unauthorized Token required", 401);
+        accessToken = accessToken.split(" ")[1];
         const decoded = jwtService.compareAccessToken(accessToken);
         const checkUser = await UserModel.findByPk(decoded.user_id);
         if(!checkUser) throw new ClientError("Invalid Token", 401);

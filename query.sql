@@ -16,7 +16,7 @@ INSERT INTO users (
   'Xamroqulov',
   'xamroqulovsh7@gmail.com',
   '$2b$10$H.s.XIqsHPiFcmQHj3doSujqthosT8bl5YQyA4wllp3H9O.eS17CC',
-  '+998971922227',
+  '+998971912227',
   'admin',
   true,
   NOW(),
@@ -25,6 +25,6 @@ INSERT INTO users (
 
 SELECT * FROM admins;
 
-INSERT INTO admins(user_id, is_super, "createdAt", "updatedAt") VALUES(3, true, NOW(), NOW());
+INSERT INTO admins(user_id, is_super, "createdAt", "updatedAt") VALUES(1, true, NOW(), NOW());
 
 DELETE FROM users WHERE id=7;

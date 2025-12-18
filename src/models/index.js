@@ -9,6 +9,8 @@ import Admin from "./user/Admin.model.js";
 import Instructor from "./user/Instructor.model.js";
 import User from "./user/User.model.js";
 import Notification from "./user/Notification.model.js";
+import Technology from "./course/Technology.model.js";
+import CourseTechnology from "./course/CourseTechnology.model.js";
 
 const UserModel = User(sequelize);
 const AdminModel = Admin(sequelize);
@@ -20,6 +22,8 @@ const CourseModel = Course(sequelize);
 const LessonModel = Lesson(sequelize);
 const CategoryModel = Category(sequelize);
 const NotificationModel = Notification(sequelize);
+const TechnologyModel = Technology(sequelize);
+const CourseTechnologyModel = CourseTechnology(sequelize);
 
 // user.id=admin.user_id;
 UserModel.hasOne(AdminModel, {foreignKey: "user_id", onDelete: "CASCADE"});
@@ -28,6 +32,22 @@ AdminModel.belongsTo(UserModel, {foreignKey: "user_id"});
 // user.id=instructor.user_id;
 UserModel.hasOne(InstructorModel, {foreignKey: "user_id", onDelete: "CASCADE"});
 InstructorModel.belongsTo(UserModel, {foreignKey: "user_id"});
+
+// user.id=refreshTokens.user_id;
+UserModel.hasMany(RefreshTokenModel, {foreignKey: "user_id", onDelete: "CASCADE"}),
+RefreshTokenModel.belongsTo(UserModel, {foreignKey: "user_id"});
+
+// instructor.id = course.instructor_id
+InstructorModel.hasMany(CourseModel, {foreignKey: "instructor_id", onDelete: "CASCADE"});
+CourseModel.belongsTo(InstructorModel, {foreignKey: "instructor_id"});
+
+// category.id=course.category_id;
+CategoryModel.hasMany(CourseModel, {foreignKey: "category_id", onDelete: "CASCADE"});
+CourseModel.belongsTo(CategoryModel, {foreignKey: "category_id"});
+
+// CourseModel.belongsToMany(TechnologyModel, {through: "course"})
+
+
 
 export {
   UserModel,
@@ -40,4 +60,6 @@ export {
   LessonModel,
   CategoryModel,
   NotificationModel,
+  TechnologyModel,
+  CourseTechnologyModel
 };

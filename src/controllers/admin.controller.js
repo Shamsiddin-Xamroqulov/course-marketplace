@@ -98,7 +98,7 @@ class AdminController {
           value.password = await hashService.hashingPassword(value.password);
         }
         await UserModel.update(value, {
-          where: { id: findAdmin.id, role: "admin" },
+          where: { id: findAdmin.user_id, role: "admin" },
         });
         return res.json({
           message: "Admin successfully updated !",

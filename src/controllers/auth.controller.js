@@ -216,8 +216,8 @@ class AuthController {
         );
         return res.json({
           message: "User successfully logged in !",
-          accessToken,
           status: 200,
+          accessToken,
         });
       } catch (err) {
         return globalError(err, res);

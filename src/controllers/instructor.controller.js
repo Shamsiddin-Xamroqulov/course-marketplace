@@ -83,7 +83,7 @@ class InstructorController {
           value.password = await hashService.hashingPassword(value.password);
         }
         await UserModel.update(value, {
-          where: { id: findInstructor.id, role: "instructor" },
+          where: { id: findInstructor.user_id, role: "instructor" },
         });
         return res.json({
           message: "Instructor successfully updated !",

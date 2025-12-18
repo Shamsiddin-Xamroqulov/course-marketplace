@@ -6,6 +6,7 @@ const tokenDataGenerator = async (findUser, tokenData) => {
     return {
       ...tokenData,
       is_student: true,
+      id: findUser.id
     };
   }
   if (findUser.role == "instructor") {
@@ -17,7 +18,7 @@ const tokenDataGenerator = async (findUser, tokenData) => {
     return {
       ...tokenData,
       is_instructor: true,
-      instructor_id: instructor.id,
+      id: instructor.id,
     };
   }
   if (findUser.role == "admin") {
@@ -30,7 +31,7 @@ const tokenDataGenerator = async (findUser, tokenData) => {
         ...tokenData,
         is_admin: true,
         is_super_admin: admin.is_super,
-        admin_id: admin.id
+        id: admin.id
     };
   };
 };

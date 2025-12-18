@@ -6,6 +6,7 @@ import cookieParser from "cookie-parser";
 import { dbConnection } from "./lib/connection/db.connection.js";
 import swaggerUiExpress from "swagger-ui-express";
 import swaggerDocs from "./docs/swagger.docs.js";
+import jwtService from "./lib/services/jwt.service.js";
 const {server: {PORT}} = serverConfig;
 
 dbConnection().catch(err => {
