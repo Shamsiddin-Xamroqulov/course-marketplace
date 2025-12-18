@@ -1,4 +1,4 @@
--- Active: 1764654077053@@127.0.0.1@5432@course_marketplace
+-- Active: 1765981898457@@127.0.0.1@5432@course_marketplace
 SELECT * FROM users;
 
 INSERT INTO users (

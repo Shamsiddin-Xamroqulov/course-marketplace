@@ -16,25 +16,24 @@ class AdminController {
         });
         if (error) throw new ClientError(error.message, 400);
         const checkAdmin = await UserModel.findOne({
-          where: { email: value.email },
+          where: { email: value.email, role: "admin" },
         });
-        if (checkAdmin) throw new ClientError("Admin already exists", 400);
+        if (checkAdmin) throw new ClientError("Admin already exists", 409);
         value.password = await hashService.hashingPassword(value.password);
         const insertAdmin = await UserModel.create({
           ...value,
           is_verified: true,
-          role: "admin"
+          role: "admin",
         });
-        const {password, otp, otp_time, avatar, photo_id, ...safeAdmin} = insertAdmin.toJSON();
+        const { password, otp, otp_time, avatar, photo_id, ...safeAdmin } =
+          insertAdmin.toJSON();
         await AdminModel.create({ user_id: insertAdmin.id });
-        return res
-          .status(201)
-          .json({
-            success: true,
-            message: "Admin successfully created !",
-            status: 201,
-            data: safeAdmin,
-          });
+        return res.status(201).json({
+          success: true,
+          message: "Admin successfully created !",
+          status: 201,
+          data: safeAdmin,
+        });
       } catch (err) {
         return globalError(err, res);
       }
@@ -77,6 +76,8 @@ class AdminController {
             ],
           },
         });
+        if (!admins.length)
+          throw new ClientError("No admin have been created yet", 404);
         return res.json(admins);
       } catch (err) {
         return globalError(err, res);
@@ -85,6 +86,7 @@ class AdminController {
     this.update_admin = async (req, res) => {
       try {
         const { id } = req.params;
+        if (!id) throw new ClientError("Params Id is required", 400);
         const findAdmin = await AdminModel.findOne({ where: { id } });
         if (!findAdmin) throw new ClientError("Admin not found", 404);
         const updateData = req.body;
@@ -92,10 +94,12 @@ class AdminController {
           abortEarly: false,
         });
         if (error) throw new ClientError(error.message, 400);
-        if(value.password) {
+        if (value.password) {
           value.password = await hashService.hashingPassword(value.password);
-        };
-        await UserModel.update({ ...value });
+        }
+        await UserModel.update(value, {
+          where: { id: findAdmin.id, role: "admin" },
+        });
         return res.json({
           message: "Admin successfully updated !",
           status: 200,
@@ -107,6 +111,7 @@ class AdminController {
     this.delete_admin = async (req, res) => {
       try {
         const { id } = req.params;
+        if (!id) throw new ClientError("Params Id is required", 400);
         const findAdmin = await AdminModel.findOne({ where: { id } });
         if (!findAdmin) throw new ClientError("Admin not found !", 404);
         await AdminModel.destroy({ where: { id } });

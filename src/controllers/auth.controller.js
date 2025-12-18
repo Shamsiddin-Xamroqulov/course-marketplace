@@ -29,7 +29,7 @@ class AuthController {
         const checkUser = await UserModel.findOne({
           where: { email: value.email },
         });
-        if (checkUser) throw new ClientError("User alredy exists", 400);
+        if (checkUser) throw new ClientError("User already exists", 409);
         const { otp, otpTime } = otpGenerator();
         await mailService(otp, value.email);
         const hashPassword = await hashService.hashingPassword(value.password);
