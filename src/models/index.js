@@ -10,7 +10,6 @@ import Instructor from "./user/Instructor.model.js";
 import User from "./user/User.model.js";
 import Notification from "./user/Notification.model.js";
 import Technology from "./course/Technology.model.js";
-import CourseTechnology from "./course/CourseTechnology.model.js";
 
 const UserModel = User(sequelize);
 const AdminModel = Admin(sequelize);
@@ -23,7 +22,6 @@ const LessonModel = Lesson(sequelize);
 const CategoryModel = Category(sequelize);
 const NotificationModel = Notification(sequelize);
 const TechnologyModel = Technology(sequelize);
-const CourseTechnologyModel = CourseTechnology(sequelize);
 
 // user.id=admin.user_id;
 UserModel.hasOne(AdminModel, {foreignKey: "user_id", onDelete: "CASCADE"});
@@ -45,9 +43,9 @@ CourseModel.belongsTo(InstructorModel, {foreignKey: "instructor_id"});
 CategoryModel.hasMany(CourseModel, {foreignKey: "category_id", onDelete: "CASCADE"});
 CourseModel.belongsTo(CategoryModel, {foreignKey: "category_id"});
 
-// CourseModel.belongsToMany(TechnologyModel, {through: "course"})
-
-
+// course.id=course_technologies.course_id && technology.id=course_technology.technology_id;
+CourseModel.belongsToMany(TechnologyModel, {through: "course_technologies", foreignKey: "course_id", otherKey: "technology_id"});
+TechnologyModel.belongsToMany(CourseModel, {through: "course_technologies", foreignKey: "technology_id", otherKey: "course_id"});
 
 export {
   UserModel,
@@ -61,5 +59,4 @@ export {
   CategoryModel,
   NotificationModel,
   TechnologyModel,
-  CourseTechnologyModel
 };

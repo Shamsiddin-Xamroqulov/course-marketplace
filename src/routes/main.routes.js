@@ -5,6 +5,7 @@ import studentRouter from "./student.routes.js";
 import categoryRouter from "./category.routes.js";
 import instructorRouter from "./instructor.routes.js";
 import checkTokenGuard from "../guards/check.token.guard.js";
+import technologyRouter from "./technology.routes.js";
 
 const mainRouter = Router();
 
@@ -25,5 +26,8 @@ mainRouter.use("/student", studentRouter);
 
 // Category
 mainRouter.use("/category", categoryRouter);
+
+// Technology
+mainRouter.use("/technology", technologyRouter)
 
 export default mainRouter;
