@@ -1,6 +1,6 @@
 import { globalError } from "shokhijakhon-error-handler";
 
-const checkTechnologyGuard = (req, res, next) => {
+const checkRightsGuard = (req, res, next) => {
   try {
     const { id: authUserId, role, is_super_admin } = req.user;
     const { id } = req.params;
@@ -23,4 +23,4 @@ const checkTechnologyGuard = (req, res, next) => {
   }
 };
 
-export default checkTechnologyGuard;
+export default checkRightsGuard;

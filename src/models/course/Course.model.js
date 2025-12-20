@@ -32,6 +32,10 @@ export default (sequelize) => {
         defaultValue: "beginner",
         allowNull: false,
       },
+      technologies: {
+        type: DataTypes.ARRAY(DataTypes.STRING),
+        allowNull: false,
+      },
       is_free: {
         type: DataTypes.BOOLEAN,
         allowNull: false,

@@ -20,6 +20,11 @@ const serverConfig = {
         ACCESS_TOKEN_KEY: process.env.ACCESS_TOKEN_KEY,
         REFRESH_TOKEN_KEY: process.env.REFRESH_TOKEN_KEY
     },
+    cloud_service: {
+        CLOUD_NAME: process.env.CLOUD_NAME,
+        CLOUD_API_KEY: process.env.CLOUD_API_KEY,
+        CLOUD_SECRET_KEY: process.env.CLOUD_SECRET_KEY
+    },
     NODE_ENV: process.env.NODE_ENV
 };
 
