@@ -4,6 +4,7 @@ import checkAdminGuard from "../guards/check.admin.guard.js";
 import checkSuperAdminGuard from "../guards/check.super.admin.guard.js";
 import checkUpdatePermissionGuard from "../guards/check.update.permission.guard.js";
 import checkDeleteAdminsGuard from "../guards/check.delete.admins.guard.js";
+import { upload } from "../config/multer.config.js";
 
 const adminRouter = Router();
 
@@ -13,7 +14,7 @@ adminRouter.get("/all", checkAdminGuard, checkSuperAdminGuard, adminController.g
 adminRouter
   .route("/:id")
   .get(checkAdminGuard, checkSuperAdminGuard, adminController.get_admin)
-  .put(checkUpdatePermissionGuard, adminController.update_admin)
+  .put(checkUpdatePermissionGuard, upload.single("avatar"), adminController.update_admin)
   .delete(checkDeleteAdminsGuard, adminController.delete_admin);
 
 export default adminRouter;

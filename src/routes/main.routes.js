@@ -6,6 +6,7 @@ import categoryRouter from "./category.routes.js";
 import instructorRouter from "./instructor.routes.js";
 import checkTokenGuard from "../guards/check.token.guard.js";
 import courseRouter from "./course.routes.js";
+import lessonRouter from "./lesson.routes.js";
 
 const mainRouter = Router();
 
@@ -29,5 +30,8 @@ mainRouter.use("/category", categoryRouter);
 
 // Course
 mainRouter.use("/course", courseRouter);
+
+// Lesson 
+mainRouter.use("/lesson", lessonRouter);
 
 export default mainRouter;

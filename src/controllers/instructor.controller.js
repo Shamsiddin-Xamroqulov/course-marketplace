@@ -5,6 +5,10 @@ import {
 } from "../utils/validators/instructor.validator.js";
 import { InstructorModel, UserModel } from "../models/index.js";
 import hashService from "../lib/services/hashing.service.js";
+import {
+  deleteFromCloudinarySchema,
+  uploadAvatarFromBuffer,
+} from "../lib/services/cloud.service.js";
 
 class InstructorController {
   constructor() {
@@ -82,11 +86,33 @@ class InstructorController {
         if (value.password) {
           value.password = await hashService.hashingPassword(value.password);
         }
-        await UserModel.update(value, {
-          where: { id: findInstructor.user_id, role: "instructor" },
-        });
+        let avatarData = {};
+        if (req.file) {
+          const existingUser = await UserModel.findOne({
+            where: { id: findInstructor.user_id },
+          });
+          if (existingUser.avatar_id) {
+            await deleteFromCloudinarySchema(existingUser.avatar_id, "image");
+          }
+          const result = await uploadAvatarFromBuffer(
+            req.file.path || req.file.buffer
+          );
+          avatarData = {
+            avatar: result.secure_url,
+            avatar_id: result.public_id,
+          };
+        }
+        await UserModel.update(
+          {
+            ...value,
+            ...avatarData,
+          },
+          {
+            where: { id: findInstructor.user_id, role: "instructor" },
+          }
+        );
         return res.json({
-          message: "Instructor successfully updated !",
+          message: "Instructor successfully updated!",
           status: 200,
         });
       } catch (err) {
@@ -99,6 +125,9 @@ class InstructorController {
         if (!id) throw new ClientError("Params Id is required", 404);
         const findInstructor = await InstructorModel.findOne({ where: { id } });
         if (!findInstructor) throw new ClientError("Instructor not found", 404);
+        if (findInstructor.photo_id) {
+          await deleteFromCloudinarySchema(findInstructor.photo_id);
+        }
         await InstructorModel.destroy({ where: { id } });
         return res.json({
           message: "Instructor successfully deleted !",

@@ -22,24 +22,57 @@ const CategoryModel = Category(sequelize);
 const NotificationModel = Notification(sequelize);
 
 // user.id=admin.user_id;
-UserModel.hasOne(AdminModel, {foreignKey: "user_id", onDelete: "CASCADE"});
-AdminModel.belongsTo(UserModel, {foreignKey: "user_id"});
+UserModel.hasOne(AdminModel, { foreignKey: "user_id", onDelete: "CASCADE" });
+AdminModel.belongsTo(UserModel, { foreignKey: "user_id" });
 
 // user.id=instructor.user_id;
-UserModel.hasOne(InstructorModel, {foreignKey: "user_id", onDelete: "CASCADE"});
-InstructorModel.belongsTo(UserModel, {foreignKey: "user_id"});
+UserModel.hasOne(InstructorModel, {
+  foreignKey: "user_id",
+  onDelete: "CASCADE",
+});
+InstructorModel.belongsTo(UserModel, { foreignKey: "user_id" });
 
 // user.id=refreshTokens.user_id;
-UserModel.hasMany(RefreshTokenModel, {foreignKey: "user_id", onDelete: "CASCADE"}),
-RefreshTokenModel.belongsTo(UserModel, {foreignKey: "user_id"});
+UserModel.hasMany(RefreshTokenModel, {
+  foreignKey: "user_id",
+  onDelete: "CASCADE",
+}),
+  RefreshTokenModel.belongsTo(UserModel, { foreignKey: "user_id" });
 
 // instructor.id = course.instructor_id
-InstructorModel.hasMany(CourseModel, {foreignKey: "instructor_id", onDelete: "CASCADE"});
-CourseModel.belongsTo(InstructorModel, {foreignKey: "instructor_id"});
+InstructorModel.hasMany(CourseModel, {
+  foreignKey: "instructor_id",
+  onDelete: "CASCADE",
+});
+CourseModel.belongsTo(InstructorModel, { foreignKey: "instructor_id" });
 
 // category.id=course.category_id;
-CategoryModel.hasMany(CourseModel, {foreignKey: "category_id", onDelete: "CASCADE"});
-CourseModel.belongsTo(CategoryModel, {foreignKey: "category_id"});
+CategoryModel.hasMany(CourseModel, {
+  foreignKey: "category_id",
+  onDelete: "CASCADE",
+});
+CourseModel.belongsTo(CategoryModel, { foreignKey: "category_id" });
+
+// course.id=lesson.course_id;
+CourseModel.hasMany(LessonModel, {
+  foreignKey: "course_id",
+  onDelete: "CASCADE",
+});
+LessonModel.belongsTo(CourseModel, { foreignKey: "course_id" });
+
+// user.id=purchase.user_id;
+UserModel.hasMany(PurchaseModel, {
+  foreignKey: "user_id",
+  onDelete: "CASCADE",
+});
+PurchaseModel.belongsTo(UserModel, { foreignKey: "user_id" });
+
+// purchase.id=payment.purchase_id;
+PurchaseModel.hasMany(PaymentModel, {
+  foreignKey: "purchase_id",
+  onDelete: "CASCADE",
+});
+PaymentModel.belongsTo(PurchaseModel, { foreignKey: "purchase_id" });
 
 export {
   UserModel,

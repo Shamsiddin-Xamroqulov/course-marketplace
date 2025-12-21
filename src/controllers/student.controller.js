@@ -5,6 +5,7 @@ import {
 } from "../utils/validators/user.validator.js";
 import { UserModel } from "../models/index.js";
 import hashService from "../lib/services/hashing.service.js";
+import { deleteFromCloudinarySchema, uploadAvatarFromBuffer } from "../lib/services/cloud.service.js";
 
 class StudentController {
   constructor() {
@@ -74,9 +75,30 @@ class StudentController {
         if (value.password) {
           value.password = await hashService.hashingPassword(value.password);
         }
-        await UserModel.update(value, { where: { id, role: "student" } });
+        let avatarData = {};
+        if (req.file) {
+          if (findStudent.avatar_id) {
+            await deleteFromCloudinarySchema(findStudent.avatar_id, "image");
+          }
+          const result = await uploadAvatarFromBuffer(
+            req.file.path || req.file.buffer
+          );
+          avatarData = {
+            avatar: result.secure_url,
+            avatar_id: result.public_id,
+          };
+        }
+        await UserModel.update(
+          {
+            ...value,
+            ...avatarData,
+          },
+          {
+            where: { id, role: "student" },
+          }
+        );
         return res.json({
-          message: "Student successfully updated !",
+          message: "Student successfully updated!",
           status: 200,
         });
       } catch (err) {
@@ -91,6 +113,9 @@ class StudentController {
           where: { id, role: "student" },
         });
         if (!findUser) throw new ClientError("Student not found", 404);
+        if (findUser.photo_id) {
+          await deleteFromCloudinarySchema(findUser.photo_id);
+        }
         await UserModel.destroy({ where: { id, role: "student" } });
         return res.json({
           message: "Student successfully deleted !",

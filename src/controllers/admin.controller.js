@@ -5,6 +5,7 @@ import {
   updateUserSchema,
 } from "../utils/validators/user.validator.js";
 import hashService from "../lib/services/hashing.service.js";
+import { deleteFromCloudinarySchema, uploadAvatarFromBuffer } from "../lib/services/cloud.service.js";
 
 class AdminController {
   constructor() {
@@ -97,11 +98,33 @@ class AdminController {
         if (value.password) {
           value.password = await hashService.hashingPassword(value.password);
         }
-        await UserModel.update(value, {
-          where: { id: findAdmin.user_id, role: "admin" },
-        });
+        let avatarData = {};
+        if (req.file) {
+          const existingUser = await UserModel.findOne({
+            where: { id: findAdmin.user_id },
+          });
+          if (existingUser.avatar_id) {
+            await deleteFromCloudinarySchema(existingUser.avatar_id, "image");
+          }
+          const result = await uploadAvatarFromBuffer(
+            req.file.path || req.file.buffer
+          );
+          avatarData = {
+            avatar: result.secure_url,
+            avatar_id: result.public_id,
+          };
+        }
+        await UserModel.update(
+          {
+            ...value,
+            ...avatarData,
+          },
+          {
+            where: { id: findAdmin.user_id, role: "admin" },
+          }
+        );
         return res.json({
-          message: "Admin successfully updated !",
+          message: "Admin successfully updated!",
           status: 200,
         });
       } catch (err) {
@@ -114,6 +137,9 @@ class AdminController {
         if (!id) throw new ClientError("Params Id is required", 400);
         const findAdmin = await AdminModel.findOne({ where: { id } });
         if (!findAdmin) throw new ClientError("Admin not found !", 404);
+        if(findAdmin.photo_id) {
+          await deleteFromCloudinarySchema(findAdmin.photo_id);
+        };
         await AdminModel.destroy({ where: { id } });
         return res.json({
           message: "Admin successfully deleted !",
