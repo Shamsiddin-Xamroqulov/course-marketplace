@@ -12,7 +12,7 @@ export default {
                 type: "object",
                 properties: {
                   first_name: {
-                  type: "string",
+                    type: "string",
                     minLength: 2,
                     maxLength: 50,
                     default: "Leo",
@@ -49,6 +49,33 @@ export default {
                   "phone_number",
                 ],
               },
+            },
+          },
+        },
+      },
+    },
+    "/api/auth/login": {
+      post: {
+        summary: "Login",
+        tags: ["Auth"],
+        requestBody: {
+          required: true,
+          content: {
+            "application/json": {
+              schema: "object",
+              properties: {
+                email: {
+                  type: "stpring",
+                  default: "leomessi@gmail.com"
+                },
+                password: {
+                  type: "string",
+                  minLength: 2,
+                  maxLength: 100,
+                  default: "leomessi123"
+                },
+              },
+              required: ["email", "password"]
             },
           },
         },

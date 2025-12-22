@@ -2,7 +2,7 @@ import { ClientError, globalError } from "shokhijakhon-error-handler";
 import {
   createPurchaseSchema,
   updatePurchaseSchema,
-} from "../utils/validators/purchase.validator";
+} from "../utils/validators/purchase.validator.js";
 import { CourseModel, PurchaseModel, UserModel } from "../models/index.js";
 
 class PurchaseController {

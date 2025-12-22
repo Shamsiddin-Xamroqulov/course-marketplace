@@ -1,5 +1,5 @@
 import { ClientError, globalError } from "shokhijakhon-error-handler";
-import jwtService from "../lib/services/jwt.service";
+import jwtService from "../lib/services/jwt.service.js";
 import { UserModel } from "../models/index.js";
 
 const checkStudentGuard = async (req, res, next) => {

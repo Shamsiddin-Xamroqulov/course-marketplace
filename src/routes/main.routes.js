@@ -7,6 +7,8 @@ import instructorRouter from "./instructor.routes.js";
 import checkTokenGuard from "../guards/check.token.guard.js";
 import courseRouter from "./course.routes.js";
 import lessonRouter from "./lesson.routes.js";
+import purchaseRouter from "./purchase.routes.js";
+import paymentRouter from "./payment.routes.js";
 
 const mainRouter = Router();
 
@@ -33,5 +35,11 @@ mainRouter.use("/course", courseRouter);
 
 // Lesson 
 mainRouter.use("/lesson", lessonRouter);
+
+// Purchase
+mainRouter.use("/purchase", purchaseRouter);
+
+// Payment
+mainRouter.use("/payment", paymentRouter);
 
 export default mainRouter;
