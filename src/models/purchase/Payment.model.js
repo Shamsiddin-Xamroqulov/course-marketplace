@@ -25,11 +25,9 @@ export default (sequelize) => {
       },
       transaction_id: {
         type: DataTypes.TEXT,
-        allowNull: false,
       },
       paid_at: {
         type: DataTypes.DATE,
-        allowNull: false,
       },
     },
     {
