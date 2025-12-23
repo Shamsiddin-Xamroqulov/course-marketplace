@@ -1,30 +1,27 @@
+import adminDocs from "./admin.docs.js";
 import authDocs from "./auth.docs.js";
+import components from "./components.js";
+import studentDocs from "./student.docs.js";
 
 export default {
   openapi: "3.0.0",
   info: {
     title: "Course-marketplace",
     version: "1.0.0",
-    description: "Course-marketplace Api docmentation"
+    description: "Course-marketplace Api docmentation",
   },
-  securitySchemes: {
-    bearerAuth: {
-      type: "http",
-      scheme: "bearer",
-      bearerFormat: "JWT",
-    },
-  },
-  servers: [{ url: "http://localhost:4000", description: "Local server" }],
+  servers: [{ url: "http://127.0.0.1:4000", description: "Local server" }],
   components: {
+    schemas: {
+      ...components.schemas,
+    },
     securitySchemes: {
-      bearerAuth: {
-        type: "http",
-        scheme: "bearer",
-        bearerFormat: "JWT",
-      },
+      ...components.securitySchemes,
     },
   },
   paths: {
     ...authDocs.paths,
+    ...studentDocs.paths,
+    ...adminDocs.paths
   },
 };

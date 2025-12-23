@@ -1,24 +1,25 @@
 import { ClientError, globalError } from "shokhijakhon-error-handler";
 import { NotificationModel } from "../models/index.js";
 import { createNotificationSchema } from "../utils/validators/notification.validator.js";
-import logger from "../utils/logger.js";
+import logger from "../lib/services/logger.service.js";
 
 class NotificationController {
   constructor() {
     this.create_notification = async (req, res) => {
       try {
         const data = req.body;
-        const {error, value} = await createNotificationSchema.validate(data, {
+        const { error, value } = createNotificationSchema.validate(data, {
           abortEarly: false,
         });
-        if(error) throw new ClientError(error.message, 400)
-        const notification = await NotificationModel.create(data);
+        if (error) throw new ClientError(error.message, 400);
+        const notification = await NotificationModel.create(value);
         logger.info(
           `Notification created: id=${notification.id}, title=${
             data.title || "N/A"
           }`
         );
         return res.status(201).json({
+          success: true,
           message: "Notification created",
           data: notification,
           status: 201,
@@ -47,8 +48,8 @@ class NotificationController {
           logger.error(`GET_ALL error: ${error.message}`);
           return globalError(error, res);
         }
-      },
-      this.GET_BY_ID = async (req, res) => {
+      }
+      this.get_notification_by_id = async (req, res) => {
         try {
           const { id } = req.params;
 
@@ -67,8 +68,8 @@ class NotificationController {
           logger.error(`GET_BY_ID error: ${error.message}`);
           return globalError(error, res);
         }
-      },
-      this.DELETE = async (req, res) => {
+      }
+      this.delete = async (req, res) => {
         try {
           const { id } = req.params;
 

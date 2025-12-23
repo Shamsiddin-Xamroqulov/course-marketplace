@@ -11,10 +11,8 @@ const studentRouter = Router();
 studentRouter.post("/create", checkAdminGuard, checkSuperAdminGuard, studentController.create_student);
 studentRouter.get("/all", checkAdminGuard, checkSuperAdminGuard, studentController.get_student);
 
-studentRouter
-  .route("/:id")
-  .get(checkAdminGuard, checkSuperAdminGuard, studentController.get_student)
-  .put(checkUpdatePermissionGuard, upload.single("avatar"), studentController.update_student)
-  .delete(checkDeleteAdminsGuard, studentController.delete_student);
+studentRouter.get("/get/by/:id", checkAdminGuard, checkSuperAdminGuard, studentController.get_student)
+studentRouter.put("/update/by/:id", checkUpdatePermissionGuard, upload.single("avatar"), studentController.update_student)
+studentRouter.delete("/delete/by/:id", checkDeleteAdminsGuard, studentController.delete_student);
 
 export default studentRouter;

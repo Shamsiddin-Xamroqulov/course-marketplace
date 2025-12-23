@@ -10,50 +10,7 @@ export default {
           content: {
             "application/json": {
               schema: {
-                type: "object",
-                properties: {
-                  first_name: {
-                    type: "string",
-                    minLength: 2,
-                    maxLength: 50,
-                    example: "Leo",
-                  },
-                  last_name: {
-                    type: "string",
-                    minLength: 2,
-                    maxLength: 50,
-                    example: "Messi",
-                  },
-                  email: {
-                    type: "string",
-                    format: "email",
-                    example: "leomessi@gmail.com",
-                  },
-                  password: {
-                    type: "string",
-                    minLength: 6,
-                    maxLength: 100,
-                    example: "leomessi123",
-                  },
-                  phone_number: {
-                    type: "string",
-                    pattern: "^\\+998[0-9]{9}$",
-                    example: "+998971922227",
-                  },
-                  role: {
-                    type: "string",
-                    enum: ["admin", "instructor", "student"],
-                    example: "student",
-                  },
-                },
-                required: [
-                  "first_name",
-                  "last_name",
-                  "email",
-                  "password",
-                  "phone_number",
-                  "role",
-                ],
+                $ref: "#/components/schemas/RegisterBody"
               },
             },
           },
@@ -64,52 +21,7 @@ export default {
             content: {
               "application/json": {
                 schema: {
-                  type: "object",
-                  properties: {
-                    success: {
-                      type: "boolean",
-                      example: true,
-                    },
-                    message: {
-                      type: "string",
-                      example: "User successfully created !",
-                    },
-                    status: {
-                      type: "integer",
-                      example: 201,
-                    },
-                    data: {
-                      type: "object",
-                      properties: {
-                        id: {
-                          type: "integer",
-                          example: 1,
-                        },
-                        first_name: {
-                          type: "string",
-                          example: "Leo",
-                        },
-                        last_name: {
-                          type: "string",
-                          example: "Messi",
-                        },
-                        email: {
-                          type: "string",
-                          format: "email",
-                          example: "leomessi@gmail.com",
-                        },
-                        role: {
-                          type: "string",
-                          enum: ["admin", "instructor", "student"],
-                          example: "student",
-                        },
-                        is_verified: {
-                          type: "boolean",
-                          example: false,
-                        },
-                      },
-                    },
-                  },
+                  $ref: "#/components/schemas/ResponseData"
                 },
               },
             },
@@ -245,15 +157,7 @@ export default {
           content: {
             "application/json": {
               schema: {
-                type: "object",
-                properties: {
-                  email: {
-                    type: "string",
-                    format: "email",
-                    example: "leomessi@gmail.com",
-                  },
-                },
-                required: ["email"],
+                $ref: "#/components/schemas/EmailOnly"
               },
             },
           },
@@ -352,15 +256,7 @@ export default {
           content: {
             "application/json": {
               schema: {
-                type: "object",
-                properties: {
-                  email: {
-                    type: "string",
-                    format: "email",
-                    example: "leomessi@gmail.com",
-                  },
-                },
-                required: ["email"],
+                $ref: "#/components/schemas/EmailOnly"
               },
             },
           },

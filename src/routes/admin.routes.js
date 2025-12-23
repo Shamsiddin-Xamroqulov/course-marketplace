@@ -11,10 +11,8 @@ const adminRouter = Router();
 adminRouter.post("/create", checkAdminGuard, checkSuperAdminGuard, adminController.create_admin);
 adminRouter.get("/all", checkAdminGuard, checkSuperAdminGuard, adminController.get_admin);
 
-adminRouter
-  .route("/:id")
-  .get(checkAdminGuard, checkSuperAdminGuard, adminController.get_admin)
-  .put(checkUpdatePermissionGuard, upload.single("avatar"), adminController.update_admin)
-  .delete(checkDeleteAdminsGuard, adminController.delete_admin);
+adminRouter.get("/get/by/:id", checkAdminGuard, checkSuperAdminGuard, adminController.get_admin)
+adminRouter.put("/update/by/:id", checkUpdatePermissionGuard, upload.single("avatar"), adminController.update_admin)
+adminRouter.delete("/delete/by/:id",checkDeleteAdminsGuard, adminController.delete_admin);
 
 export default adminRouter;
