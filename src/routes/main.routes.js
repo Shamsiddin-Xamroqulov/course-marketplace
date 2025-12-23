@@ -9,6 +9,7 @@ import courseRouter from "./course.routes.js";
 import lessonRouter from "./lesson.routes.js";
 import purchaseRouter from "./purchase.routes.js";
 import paymentRouter from "./payment.routes.js";
+import lastCourseRouter from "./last.course.routes.js";
 
 const mainRouter = Router();
 
@@ -41,5 +42,8 @@ mainRouter.use("/purchase", purchaseRouter);
 
 // Payment
 mainRouter.use("/payment", paymentRouter);
+
+// Last 30 days Course
+mainRouter.use("/last/course", lastCourseRouter);
 
 export default mainRouter;
