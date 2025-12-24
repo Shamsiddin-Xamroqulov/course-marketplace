@@ -8,10 +8,8 @@ const courseRouter = Router();
 courseRouter.post("/create", checkInstructorGuard, courseController.create_course);
 courseRouter.get("/all", courseController.get_course);
 
-courseRouter
-  .route("/:id")
-  .get(courseController.get_course)
-  .put(checkRightsGuard, courseController.update_course)
-  .delete(checkRightsGuard, courseController.delete_course);
+courseRouter.get("/get/by/:id", courseController.get_course)
+courseRouter.put("/update/by/:id", checkRightsGuard, courseController.update_course)
+courseRouter.delete("/delete/by/:id", checkRightsGuard, courseController.delete_course);
 
 export default courseRouter;

@@ -11,10 +11,8 @@ const instructorRouter = Router();
 instructorRouter.post("/create",checkAdminGuard, checkSuperAdminGuard, instructorController.create_instructor);
 instructorRouter.get("/all", checkAdminGuard, checkSuperAdminGuard, instructorController.get_instructor);
 
-instructorRouter
-  .route("/:id")
-  .get(checkAdminGuard, checkSuperAdminGuard, instructorController.get_instructor)
-  .put(checkUpdatePermissionGuard, upload.single("avatar"), instructorController.update_instructor)
-  .delete(checkDeleteAdminsGuard, instructorController.delete_instructor);
+instructorRouter.get("/get/by/:id", checkAdminGuard, checkSuperAdminGuard, instructorController.get_instructor)
+instructorRouter.put("/update/by/:id", checkUpdatePermissionGuard, upload.single("avatar"), instructorController.update_instructor)
+instructorRouter.delete("/delete/by/:id", checkDeleteAdminsGuard, instructorController.delete_instructor);
 
 export default instructorRouter;

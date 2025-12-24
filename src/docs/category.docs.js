@@ -1,10 +1,10 @@
 export default {
   paths: {
-    "/api/admin/create": {
+    "/api/category/create": {
       post: {
-        summary: "Create Admin",
-        description: "Only Super admin can create",
-        tags: ["Admin"],
+        summary: "Create Category",
+        description: "Only Super admin and Admin can create Category",
+        tags: ["Category"],
         security: [
           {
             bearerAuth: [],
@@ -15,17 +15,46 @@ export default {
           content: {
             "application/json": {
               schema: {
-                $ref: "#/components/schemas/RegisterBody",
+                $ref: "#/components/schemas/CategoryBody",
               },
             },
           },
         },
         responses: {
           201: {
-            description: "Admin successfully created",
+            description: "Category successfully created",
             content: {
               "application/json": {
-                schema: { $ref: "#/components/schemas/ResponseData" },
+                schema: {
+                  type: "object",
+                  properties: {
+                    success: {
+                      type: "boolean",
+                      example: true,
+                    },
+                    message: {
+                      type: "string",
+                      example: "Category successfully created",
+                    },
+                    status: {
+                      type: "integer",
+                      example: 201,
+                    },
+                    data: {
+                      type: "object",
+                      properties: {
+                        id: {
+                          type: "integer",
+                          example: 1,
+                        },
+                        name: {
+                          type: "string",
+                          example: "IT",
+                        },
+                      },
+                    },
+                  },
+                },
               },
             },
           },
@@ -46,31 +75,14 @@ export default {
               },
             },
           },
-          409: {
-            description: "Admin already exists",
-            content: {
-              "application/json": {
-                schema: {
-                  type: "object",
-                  properties: {
-                    message: {
-                      type: "string",
-                      example: "Admin already exists",
-                    },
-                    status: { type: "integer", example: 409 },
-                  },
-                },
-              },
-            },
-          },
         },
       },
     },
-    "/api/admin/all": {
+    "/api/category/all": {
       get: {
-        summary: "Get all admins",
-        description: "Only Super admin can fetched admins",
-        tags: ["Admin"],
+        summary: "Get all categories",
+        description: "Fetched categories",
+        tags: ["Category"],
         security: [
           {
             bearerAuth: [],
@@ -78,18 +90,20 @@ export default {
         ],
         responses: {
           200: {
-            description: "Admins fetched successfully",
+            description: "Categories fetched successfully",
             content: {
               "application/json": {
                 schema: {
                   type: "array",
-                  items: { $ref: "#/components/schemas/StudentById" },
+                  items: {
+                    $ref: "#/components/schemas/ResponseCategory",
+                  },
                 },
               },
             },
           },
           404: {
-            description: "No admins found",
+            description: "No categories found",
             content: {
               "application/json": {
                 schema: {
@@ -97,7 +111,7 @@ export default {
                   properties: {
                     message: {
                       type: "string",
-                      example: "No admins have been created",
+                      example: "No Categories have been created",
                     },
                     status: { type: "integer", example: 404 },
                   },
@@ -108,40 +122,43 @@ export default {
         },
       },
     },
-    "/api/admin/get/by/{id}": {
+    "/api/category/get/by/{id}": {
       get: {
-        summary: "Get single admin",
-        description: "Only Super admin can fetch a single admin by ID",
-        tags: ["Admin"],
+        summary: "Get single Category",
+        description: "Fetch a single category by ID",
+        tags: ["Category"],
         security: [{ bearerAuth: [] }],
         parameters: [
           {
             name: "id",
             in: "path",
             required: true,
-            description: "ID of the student to fetch",
+            description: "ID of the Category to fetch",
             schema: { type: "integer", example: 1 },
           },
         ],
         responses: {
           200: {
-            description: "Admin fetched successfully",
+            description: "Category fetched successfully",
             content: {
               "application/json": {
                 schema: {
-                  $ref: "#/components/schemas/StudentById",
+                  $ref: "#/components/schemas/ResponseCategory",
                 },
               },
             },
           },
           404: {
-            description: "Admin not found",
+            description: "Category not found",
             content: {
               "application/json": {
                 schema: {
                   type: "object",
                   properties: {
-                    message: { type: "string", example: "Admin not found" },
+                    message: {
+                      type: "string",
+                      example: "Category not found",
+                    },
                     status: { type: "integer", example: 404 },
                   },
                 },
@@ -151,18 +168,22 @@ export default {
         },
       },
     },
-    "/api/admin/update/by/{id}": {
+    "/api/category/update/by/{id}": {
       put: {
-        summary: "Update admin",
-        description: "Only Super admin and this Admin can update an existing admin's information",
-        tags: ["Admin"],
-        security: [{ bearerAuth: [] }],
+        summary: "Update Category",
+        description: "Only Super admin and Admin can update category",
+        tags: ["Category"],
+        security: [
+          {
+            bearerAuth: [],
+          },
+        ],
         parameters: [
           {
             name: "id",
             in: "path",
+            description: "ID of the category to update",
             required: true,
-            description: "ID of the admin to update",
             schema: { type: "integer", example: 1 },
           },
         ],
@@ -171,19 +192,14 @@ export default {
           content: {
             "application/json": {
               schema: {
-                $ref: "#/components/schemas/UpdateStudentBody",
-              },
-            },
-            "multipart/form-data": {
-              schema: {
-                $ref: "#/components/schemas/UpdateStudentFormBody",
+                $ref: "#/components/schemas/CategoryBody",
               },
             },
           },
         },
         responses: {
           200: {
-            description: "Admin successfully updated",
+            description: "Category successfully updated",
             content: {
               "application/json": {
                 schema: {
@@ -191,39 +207,28 @@ export default {
                   properties: {
                     message: {
                       type: "string",
-                      example: "Admin successfully updated!",
+                      example: "Category successfully updated",
                     },
-                    status: { type: "integer", example: 200 },
-                  },
-                },
-              },
-            },
-          },
-          400: {
-            description: "Validation error",
-            content: {
-              "application/json": {
-                schema: {
-                  type: "object",
-                  properties: {
-                    message: {
-                      type: "string",
-                      example: "Validation error message",
+                    status: {
+                      type: "integer",
+                      example: 200,
                     },
-                    status: { type: "integer", example: 400 },
                   },
                 },
               },
             },
           },
           404: {
-            description: "Admin not found",
+            description: "Category not found",
             content: {
               "application/json": {
                 schema: {
                   type: "object",
                   properties: {
-                    message: { type: "string", example: "Admin not found" },
+                    message: {
+                      type: "string",
+                      example: "Category not found",
+                    },
                     status: { type: "integer", example: 404 },
                   },
                 },
@@ -233,24 +238,28 @@ export default {
         },
       },
     },
-    "/api/admin/delete/by/{id}": {
+    "/api/category/delete/by/{id}": {
       delete: {
-        summary: "Delete admin",
-        description: "Only Super admin can delete an existing admin by ID",
-        tags: ["Admin"],
-        security: [{ bearerAuth: [] }],
+        summary: "Delete Category",
+        description: "Only Super admin and Admin can delete category",
+        tags: ["Category"],
+        security: [
+          {
+            bearerAuth: [],
+          },
+        ],
         parameters: [
           {
             name: "id",
             in: "path",
+            description: "ID of the category to update",
             required: true,
-            description: "ID of the admin to delete",
             schema: { type: "integer", example: 1 },
           },
         ],
         responses: {
           200: {
-            description: "Admin successfully deleted",
+            description: "Category successfully deleted",
             content: {
               "application/json": {
                 schema: {
@@ -258,39 +267,28 @@ export default {
                   properties: {
                     message: {
                       type: "string",
-                      example: "Admin successfully deleted !",
+                      example: "Category successfully deleted",
                     },
-                    status: { type: "integer", example: 200 },
-                  },
-                },
-              },
-            },
-          },
-          400: {
-            description: "Params Id is required",
-            content: {
-              "application/json": {
-                schema: {
-                  type: "object",
-                  properties: {
-                    message: {
-                      type: "string",
-                      example: "Params Id is required",
+                    status: {
+                      type: "integer",
+                      example: 200,
                     },
-                    status: { type: "integer", example: 400 },
                   },
                 },
               },
             },
           },
           404: {
-            description: "Admin not found",
+            description: "Category not found",
             content: {
               "application/json": {
                 schema: {
                   type: "object",
                   properties: {
-                    message: { type: "string", example: "Admin not found" },
+                    message: {
+                      type: "string",
+                      example: "Category not found",
+                    },
                     status: { type: "integer", example: 404 },
                   },
                 },

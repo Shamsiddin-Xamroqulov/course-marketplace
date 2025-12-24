@@ -1,10 +1,10 @@
 export default {
   paths: {
-    "/api/admin/create": {
+    "/api/instructor/create": {
       post: {
-        summary: "Create Admin",
-        description: "Only Super admin can create",
-        tags: ["Admin"],
+        summary: "Create Instructor",
+        description: "Only Super admin and Admin can create",
+        tags: ["Instructor"],
         security: [
           {
             bearerAuth: [],
@@ -13,7 +13,7 @@ export default {
         requestBody: {
           required: true,
           content: {
-            "application/json": {
+            "appliaction/json": {
               schema: {
                 $ref: "#/components/schemas/RegisterBody",
               },
@@ -22,7 +22,7 @@ export default {
         },
         responses: {
           201: {
-            description: "Admin successfully created",
+            description: "Instructor successfully created",
             content: {
               "application/json": {
                 schema: { $ref: "#/components/schemas/ResponseData" },
@@ -47,7 +47,7 @@ export default {
             },
           },
           409: {
-            description: "Admin already exists",
+            description: "Instructor already exists",
             content: {
               "application/json": {
                 schema: {
@@ -55,7 +55,7 @@ export default {
                   properties: {
                     message: {
                       type: "string",
-                      example: "Admin already exists",
+                      example: "Instructor already exists",
                     },
                     status: { type: "integer", example: 409 },
                   },
@@ -66,11 +66,11 @@ export default {
         },
       },
     },
-    "/api/admin/all": {
+    "/api/insturctor/all": {
       get: {
-        summary: "Get all admins",
-        description: "Only Super admin can fetched admins",
-        tags: ["Admin"],
+        summary: "Get all insturctors",
+        description: "Only Super admin and Admin can fetched instructors",
+        tags: ["Instructor"],
         security: [
           {
             bearerAuth: [],
@@ -78,7 +78,7 @@ export default {
         ],
         responses: {
           200: {
-            description: "Admins fetched successfully",
+            description: "Instructors fetched successfully",
             content: {
               "application/json": {
                 schema: {
@@ -89,7 +89,7 @@ export default {
             },
           },
           404: {
-            description: "No admins found",
+            description: "No instructors found",
             content: {
               "application/json": {
                 schema: {
@@ -97,7 +97,7 @@ export default {
                   properties: {
                     message: {
                       type: "string",
-                      example: "No admins have been created",
+                      example: "No instructors have been created",
                     },
                     status: { type: "integer", example: 404 },
                   },
@@ -108,24 +108,25 @@ export default {
         },
       },
     },
-    "/api/admin/get/by/{id}": {
+    "/api/instructor/get/by/{id}": {
       get: {
-        summary: "Get single admin",
-        description: "Only Super admin can fetch a single admin by ID",
-        tags: ["Admin"],
+        summary: "Get single instructor",
+        description:
+          "Only Super admin and Admin can fetch a single instructor by ID",
+        tags: ["Instructor"],
         security: [{ bearerAuth: [] }],
         parameters: [
           {
             name: "id",
             in: "path",
             required: true,
-            description: "ID of the student to fetch",
+            description: "ID of the Instructor to fetch",
             schema: { type: "integer", example: 1 },
           },
         ],
         responses: {
           200: {
-            description: "Admin fetched successfully",
+            description: "Instructor fetched successfully",
             content: {
               "application/json": {
                 schema: {
@@ -135,13 +136,16 @@ export default {
             },
           },
           404: {
-            description: "Admin not found",
+            description: "Instructor not found",
             content: {
               "application/json": {
                 schema: {
                   type: "object",
                   properties: {
-                    message: { type: "string", example: "Admin not found" },
+                    message: {
+                      type: "string",
+                      example: "Instructor not found",
+                    },
                     status: { type: "integer", example: 404 },
                   },
                 },
@@ -151,18 +155,19 @@ export default {
         },
       },
     },
-    "/api/admin/update/by/{id}": {
+    "/api/instructor/update/by/{id}": {
       put: {
-        summary: "Update admin",
-        description: "Only Super admin and this Admin can update an existing admin's information",
-        tags: ["Admin"],
+        summary: "Update Instructor",
+        description:
+          "Only Super admin and Admin this Instructor can update an existing instructor's information",
+        tags: ["Instructor"],
         security: [{ bearerAuth: [] }],
         parameters: [
           {
             name: "id",
             in: "path",
             required: true,
-            description: "ID of the admin to update",
+            description: "ID of the instructor to update",
             schema: { type: "integer", example: 1 },
           },
         ],
@@ -183,7 +188,7 @@ export default {
         },
         responses: {
           200: {
-            description: "Admin successfully updated",
+            description: "Instructor successfully updated",
             content: {
               "application/json": {
                 schema: {
@@ -191,7 +196,7 @@ export default {
                   properties: {
                     message: {
                       type: "string",
-                      example: "Admin successfully updated!",
+                      example: "Instructor successfully updated!",
                     },
                     status: { type: "integer", example: 200 },
                   },
@@ -217,13 +222,16 @@ export default {
             },
           },
           404: {
-            description: "Admin not found",
+            description: "Instructor not found",
             content: {
               "application/json": {
                 schema: {
                   type: "object",
                   properties: {
-                    message: { type: "string", example: "Admin not found" },
+                    message: {
+                      type: "string",
+                      example: "Instructor not found",
+                    },
                     status: { type: "integer", example: 404 },
                   },
                 },
@@ -233,24 +241,25 @@ export default {
         },
       },
     },
-    "/api/admin/delete/by/{id}": {
+    "/api/insturctor/delete/by/{id}": {
       delete: {
-        summary: "Delete admin",
-        description: "Only Super admin can delete an existing admin by ID",
-        tags: ["Admin"],
+        summary: "Delete Instructor",
+        description:
+          "Only Super admin and Admin can delete an existing instructor by ID",
+        tags: ["Instructor"],
         security: [{ bearerAuth: [] }],
         parameters: [
           {
             name: "id",
             in: "path",
             required: true,
-            description: "ID of the admin to delete",
+            description: "ID of the instructor to delete",
             schema: { type: "integer", example: 1 },
           },
         ],
         responses: {
           200: {
-            description: "Admin successfully deleted",
+            description: "Instructor successfully deleted",
             content: {
               "application/json": {
                 schema: {
@@ -258,7 +267,7 @@ export default {
                   properties: {
                     message: {
                       type: "string",
-                      example: "Admin successfully deleted !",
+                      example: "Instructor successfully deleted !",
                     },
                     status: { type: "integer", example: 200 },
                   },
@@ -284,13 +293,16 @@ export default {
             },
           },
           404: {
-            description: "Admin not found",
+            description: "Intructor not found",
             content: {
               "application/json": {
                 schema: {
                   type: "object",
                   properties: {
-                    message: { type: "string", example: "Admin not found" },
+                    message: {
+                      type: "string",
+                      example: "Instructor not found",
+                    },
                     status: { type: "integer", example: 404 },
                   },
                 },

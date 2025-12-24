@@ -1,6 +1,9 @@
 import adminDocs from "./admin.docs.js";
 import authDocs from "./auth.docs.js";
+import categoryDocs from "./category.docs.js";
 import components from "./components.js";
+import courseDocs from "./course.docs.js";
+import instructorDocs from "./instructor.docs.js";
 import studentDocs from "./student.docs.js";
 
 export default {
@@ -21,7 +24,10 @@ export default {
   },
   paths: {
     ...authDocs.paths,
+    ...adminDocs.paths,
+    ...instructorDocs.paths,
     ...studentDocs.paths,
-    ...adminDocs.paths
+    ...categoryDocs.paths,
+    ...courseDocs.paths
   },
 };

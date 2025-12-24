@@ -3,7 +3,7 @@ export default {
     "/api/student/create": {
       post: {
         summary: "Create student",
-        description: "Create new student",
+        description: "Only Super admin and Admin can create new student",
         tags: ["Student"],
         security: [
           {
@@ -156,7 +156,7 @@ export default {
     "/api/student/update/by/{id}": {
       put: {
         summary: "Update student",
-        description: "Update an existing student's information",
+        description: "Only Super Admin and Admin this Student can update an existing student's information",
         tags: ["Student"],
         security: [{ bearerAuth: [] }],
         parameters: [
@@ -238,7 +238,7 @@ export default {
     "/api/student/delete/by/{id}": {
       delete: {
         summary: "Delete student",
-        description: "Delete an existing student by ID",
+        description: "Only Super admin and Admin can delete an existing student by ID",
         tags: ["Student"],
         security: [{ bearerAuth: [] }],
         parameters: [

@@ -1,10 +1,10 @@
 export default {
   paths: {
-    "/api/admin/create": {
+    "/api/course/create": {
       post: {
-        summary: "Create Admin",
-        description: "Only Super admin can create",
-        tags: ["Admin"],
+        summary: "Create course",
+        description: "Only Instructor can create course",
+        tags: ["Course"],
         security: [
           {
             bearerAuth: [],
@@ -15,22 +15,24 @@ export default {
           content: {
             "application/json": {
               schema: {
-                $ref: "#/components/schemas/RegisterBody",
+                $ref: "#/components/schemas/CourseBody",
               },
             },
           },
         },
         responses: {
           201: {
-            description: "Admin successfully created",
+            description: "Course successfully created",
             content: {
               "application/json": {
-                schema: { $ref: "#/components/schemas/ResponseData" },
+                schema: {
+                  $ref: "#/components/schemas/CourseResponse",
+                },
               },
             },
           },
           400: {
-            description: "Validation error",
+            description: "Validation Error",
             content: {
               "application/json": {
                 schema: {
@@ -46,31 +48,14 @@ export default {
               },
             },
           },
-          409: {
-            description: "Admin already exists",
-            content: {
-              "application/json": {
-                schema: {
-                  type: "object",
-                  properties: {
-                    message: {
-                      type: "string",
-                      example: "Admin already exists",
-                    },
-                    status: { type: "integer", example: 409 },
-                  },
-                },
-              },
-            },
-          },
         },
       },
     },
-    "/api/admin/all": {
+    "/api/course/all": {
       get: {
-        summary: "Get all admins",
-        description: "Only Super admin can fetched admins",
-        tags: ["Admin"],
+        summary: "Get all courses",
+        description: "Fetched courses",
+        tags: ["Course"],
         security: [
           {
             bearerAuth: [],
@@ -78,18 +63,20 @@ export default {
         ],
         responses: {
           200: {
-            description: "Admins fetched successfully",
+            description: "Courses fetched successfully",
             content: {
               "application/json": {
                 schema: {
                   type: "array",
-                  items: { $ref: "#/components/schemas/StudentById" },
+                  items: {
+                    $ref: "#/components/schemas/ResponseCourse",
+                  },
                 },
               },
             },
           },
           404: {
-            description: "No admins found",
+            description: "No courses found",
             content: {
               "application/json": {
                 schema: {
@@ -97,7 +84,7 @@ export default {
                   properties: {
                     message: {
                       type: "string",
-                      example: "No admins have been created",
+                      example: "No Courses have been created",
                     },
                     status: { type: "integer", example: 404 },
                   },
@@ -108,40 +95,43 @@ export default {
         },
       },
     },
-    "/api/admin/get/by/{id}": {
+    "/api/course/get/by/{id}": {
       get: {
-        summary: "Get single admin",
-        description: "Only Super admin can fetch a single admin by ID",
-        tags: ["Admin"],
+        summary: "Get single Course",
+        description: "Fetch a single course by ID",
+        tags: ["Course"],
         security: [{ bearerAuth: [] }],
         parameters: [
           {
             name: "id",
             in: "path",
             required: true,
-            description: "ID of the student to fetch",
+            description: "ID of the Course to fetch",
             schema: { type: "integer", example: 1 },
           },
         ],
         responses: {
           200: {
-            description: "Admin fetched successfully",
+            description: "Course fetched successfully",
             content: {
               "application/json": {
                 schema: {
-                  $ref: "#/components/schemas/StudentById",
+                  $ref: "#/components/schemas/ResponseCourse",
                 },
               },
             },
           },
           404: {
-            description: "Admin not found",
+            description: "Course not found",
             content: {
               "application/json": {
                 schema: {
                   type: "object",
                   properties: {
-                    message: { type: "string", example: "Admin not found" },
+                    message: {
+                      type: "string",
+                      example: "Course not found",
+                    },
                     status: { type: "integer", example: 404 },
                   },
                 },
@@ -151,18 +141,22 @@ export default {
         },
       },
     },
-    "/api/admin/update/by/{id}": {
+    "/api/course/update/by/{id}": {
       put: {
-        summary: "Update admin",
-        description: "Only Super admin and this Admin can update an existing admin's information",
-        tags: ["Admin"],
-        security: [{ bearerAuth: [] }],
+        summary: "Update Course",
+        description: "Only Super admin and Admin this Instructor can update Course",
+        tags: ["Course"],
+        security: [
+          {
+            bearerAuth: [],
+          },
+        ],
         parameters: [
           {
             name: "id",
             in: "path",
+            description: "ID of the course to update",
             required: true,
-            description: "ID of the admin to update",
             schema: { type: "integer", example: 1 },
           },
         ],
@@ -171,19 +165,14 @@ export default {
           content: {
             "application/json": {
               schema: {
-                $ref: "#/components/schemas/UpdateStudentBody",
-              },
-            },
-            "multipart/form-data": {
-              schema: {
-                $ref: "#/components/schemas/UpdateStudentFormBody",
+                $ref: "#/components/schemas/CourseBody",
               },
             },
           },
         },
         responses: {
           200: {
-            description: "Admin successfully updated",
+            description: "Course successfully updated",
             content: {
               "application/json": {
                 schema: {
@@ -191,39 +180,28 @@ export default {
                   properties: {
                     message: {
                       type: "string",
-                      example: "Admin successfully updated!",
+                      example: "Course successfully updated",
                     },
-                    status: { type: "integer", example: 200 },
-                  },
-                },
-              },
-            },
-          },
-          400: {
-            description: "Validation error",
-            content: {
-              "application/json": {
-                schema: {
-                  type: "object",
-                  properties: {
-                    message: {
-                      type: "string",
-                      example: "Validation error message",
+                    status: {
+                      type: "integer",
+                      example: 200,
                     },
-                    status: { type: "integer", example: 400 },
                   },
                 },
               },
             },
           },
           404: {
-            description: "Admin not found",
+            description: "Course not found",
             content: {
               "application/json": {
                 schema: {
                   type: "object",
                   properties: {
-                    message: { type: "string", example: "Admin not found" },
+                    message: {
+                      type: "string",
+                      example: "Course not found",
+                    },
                     status: { type: "integer", example: 404 },
                   },
                 },
@@ -233,24 +211,28 @@ export default {
         },
       },
     },
-    "/api/admin/delete/by/{id}": {
+    "/api/course/delete/by/{id}": {
       delete: {
-        summary: "Delete admin",
-        description: "Only Super admin can delete an existing admin by ID",
-        tags: ["Admin"],
-        security: [{ bearerAuth: [] }],
+        summary: "Delete Course",
+        description: "Only Super admin and Admin this Instructor can delete course",
+        tags: ["Course"],
+        security: [
+          {
+            bearerAuth: [],
+          },
+        ],
         parameters: [
           {
             name: "id",
             in: "path",
+            description: "ID of the course to update",
             required: true,
-            description: "ID of the admin to delete",
             schema: { type: "integer", example: 1 },
           },
         ],
         responses: {
           200: {
-            description: "Admin successfully deleted",
+            description: "Course successfully deleted",
             content: {
               "application/json": {
                 schema: {
@@ -258,39 +240,28 @@ export default {
                   properties: {
                     message: {
                       type: "string",
-                      example: "Admin successfully deleted !",
+                      example: "Course successfully deleted",
                     },
-                    status: { type: "integer", example: 200 },
-                  },
-                },
-              },
-            },
-          },
-          400: {
-            description: "Params Id is required",
-            content: {
-              "application/json": {
-                schema: {
-                  type: "object",
-                  properties: {
-                    message: {
-                      type: "string",
-                      example: "Params Id is required",
+                    status: {
+                      type: "integer",
+                      example: 200,
                     },
-                    status: { type: "integer", example: 400 },
                   },
                 },
               },
             },
           },
           404: {
-            description: "Admin not found",
+            description: "Course not found",
             content: {
               "application/json": {
                 schema: {
                   type: "object",
                   properties: {
-                    message: { type: "string", example: "Admin not found" },
+                    message: {
+                      type: "string",
+                      example: "Course not found",
+                    },
                     status: { type: "integer", example: 404 },
                   },
                 },
