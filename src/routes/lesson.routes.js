@@ -14,10 +14,8 @@ lessonRouter.post(
 );
 lessonRouter.get("/all", lessonController.get_lesson);
 
-lessonRouter
-  .route("/:id")
-  .get(lessonController.get_lesson)
-  .put(checkRightsGuard, upload.single("video"), lessonController.update_lesson)
-  .delete(checkRightsGuard, lessonController.delete_lesson);
+lessonRouter.get("/get/by/:id", lessonController.get_lesson)
+lessonRouter.put("/update/by/:id", checkRightsGuard, upload.single("video"), lessonController.update_lesson)
+lessonRouter.delete("/delete/by/:id", checkRightsGuard, lessonController.delete_lesson);
 
 export default lessonRouter;

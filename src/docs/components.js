@@ -397,6 +397,76 @@ export default {
         },
       },
     },
+    LessonBody: {
+      type: "object",
+      properties: {
+        course_id: {
+          type: "integer",
+          example: 2,
+        },
+        title: {
+          type: "string",
+          example: "Introduction to JavaScript",
+        },
+        duration: {
+          type: "string",
+          example: "10:30",
+        },
+        video: {
+          type: "string",
+          format: "binary",
+          description: "Lesson video file",
+        },
+      },
+      required: ["course_id", "title", "duration", "video"],
+    },
+    LessonResponse: {
+      type: "object",
+      properties: {
+        id: {
+          type: "integer",
+          example: 1,
+        },
+        course_id: {
+          type: "integer",
+          example: 2,
+        },
+        title: {
+          type: "string",
+          example: "Introduction to JavaScript",
+        },
+        duration: {
+          type: "string",
+          example: "1:30",
+        },
+        video_url: {
+          type: "string",
+          example:
+            "https://res.cloudinary.com/deavssvrp/video/upload/v1766428239/course_marketplace/videos/xpgjewwjj0nwupqp9y7t.mp4",
+        },
+        video_id: {
+          type: "string",
+          example: "course_marketplace/videos/xpgjewwjj0nwupqp9y7t",
+        },
+      },
+    },
+    LessonBodyJson: {
+      type: "object",
+      properties: {
+        course_id: {
+          type: "integer",
+          example: 2,
+        },
+        title: {
+          type: "string",
+          example: "Introduction to JavaScript",
+        },
+        duration: {
+          type: "string",
+          example: "1:30",
+        },
+      }
+    }
   },
   securitySchemes: {
     bearerAuth: {

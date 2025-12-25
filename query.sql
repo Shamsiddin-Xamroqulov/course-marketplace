@@ -28,3 +28,5 @@ SELECT * FROM admins;
 INSERT INTO admins(user_id, is_super, "createdAt", "updatedAt") VALUES(1, true, NOW(), NOW());
 
 DELETE FROM users WHERE id=7;
+
+SELECT * FROM lessons;
